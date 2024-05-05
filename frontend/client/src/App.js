@@ -4,9 +4,14 @@ import axios from 'axios';
 
 function App() {
   const [formData, setFormData] = useState({
-    date: '',
-    destination: '',
-    // Add other form fields as necessary
+    days_until_flight: '',
+    is_search_weekend: '',
+    is_flight_weekend: '',
+    searchDay: '',
+    flightDay: '',
+    isBasicEconomy: '',
+    segmentsAirlineName: '',
+    destinationAirport: ''
   });
   const [fare, setFare] = useState(null);
 
@@ -29,40 +34,37 @@ function App() {
   };
 
   return (
-    <div className="App">
     <Container maxWidth="sm">
       <Typography variant="h4" component="h1" gutterBottom>
         Flight Fare Prediction
       </Typography>
       <form onSubmit={handleSubmit}>
+        {/* Example input fields; add or modify as needed */}
         <TextField
-          label="Flight Date"
-          type="date"
-          name="date"
-          value={formData.date}
+          label="Days Until Flight"
+          type="number"
+          name="days_until_flight"
+          value={formData.days_until_flight}
           onChange={handleChange}
           fullWidth
           margin="normal"
         />
         <TextField
-          label="Destination"
+          label="Destination Airport"
           type="text"
-          name="destination"
-          value={formData.destination}
+          name="destinationAirport"
+          value={formData.destinationAirport}
           onChange={handleChange}
           fullWidth
           margin="normal"
         />
-        {/* Add other inputs as needed */}
+        {/* Add other inputs for each model feature */}
         <Button type="submit" variant="contained" color="primary">
           Predict Fare
         </Button>
         {fare && <Typography variant="h6">Predicted Fare: ${fare}</Typography>}
       </form>
     </Container>
-
-    <div className='prediction'>{fare}</div>
-    </div>
   );
 }
 
