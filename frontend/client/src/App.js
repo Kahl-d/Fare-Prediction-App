@@ -1,82 +1,33 @@
-import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { Container, AppBar, Toolbar, Typography, Button } from '@mui/material';
+import FarePrediction from './Components/FarePrediction';
+import SeatPrediction from './Components/SeatPrediction';
+import PriceTrend from './Components/PriceTrend';
 
 function App() {
-  const [formData, setFormData] = useState({
-    flightDate: '',
-    flightDayName: '',
-    isBasicEconomy: false,
-    segmentsAirlineName: '',
-    destinationAirport: ''
-  });
-  const [fare, setFare] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      console.log('formData:', formData);
-      const response = await axios.post('http://127.0.0.1:5000/predict', formData);
-      console.log('response:', response.data);
-      setFare(response.data.prediction);
-    } catch (error) {
-      console.error('Error fetching fare:', error);
-    }
-  };
-
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Flight Fare Prediction from SFO
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Flight Date (YYYY-MM-DD)"
-          type="date"
-          name="flightDate"
-          value={formData.flightDate}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Destination Airport"
-          type="text"
-          name="destinationAirport"
-          value={formData.destinationAirport}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          helperText="Flight destination from SFO"
-        />
-        <TextField
-          label="Airline Name"
-          type="text"
-          name="segmentsAirlineName"
-          value={formData.segmentsAirlineName}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <FormControlLabel
-          control={<Checkbox checked={formData.isBasicEconomy} onChange={handleChange} name="isBasicEconomy" />}
-          label="Is Basic Economy?"
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-          Predict Fare
-        </Button>
-        {fare && <Typography variant="h6" sx={{ mt: 2 }}>Predicted Fare: ${fare}</Typography>}
-      </form>
-    </Container>
+    <Router>
+      <Container maxWidth="lg">
+        <AppBar position="static" color="primary" sx={{ margin: '24px 0' }}>
+          <Toolbar>
+            <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
+              Flight Fare Prediction System
+            </Typography>
+            <Button color="inherit" component={Link} to="/">Home</Button>
+            <Button color="inherit" component={Link} to="/fare-prediction">Fare Prediction</Button>
+            <Button color="inherit" component={Link} to="/seat-prediction">Seat Availability</Button>
+            <Button color="inherit" component={Link} to="/price-trend">Price Trend</Button>
+          </Toolbar>
+        </AppBar>
+        <Routes>
+          <Route path="/" element={<Typography variant="h4" gutterBottom>Welcome to the Flight Fare Prediction System</Typography>} />
+          <Route path="/fare-prediction" element={<FarePrediction />} />
+          <Route path="/seat-prediction" element={<SeatPrediction />} />
+          <Route path="/price-trend" element={<PriceTrend />} />
+        </Routes>
+      </Container>
+    </Router>
   );
 }
 
