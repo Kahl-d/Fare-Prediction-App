@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography } from '@mui/material';
+import { Container, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import axios from 'axios';
 
 function App() {
   const [formData, setFormData] = useState({
-    days_until_flight: '',
-    is_search_weekend: '',
-    is_flight_weekend: '',
-    searchDay: '',
-    flightDay: '',
-    isBasicEconomy: '',
+    flightDate: '',
+    flightDayName: '',
+    isBasicEconomy: false,
     segmentsAirlineName: '',
     destinationAirport: ''
   });
   const [fare, setFare] = useState(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -34,17 +31,16 @@ function App() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Flight Fare Prediction
+        Flight Fare Prediction from SFO
       </Typography>
       <form onSubmit={handleSubmit}>
-        {/* Example input fields; add or modify as needed */}
         <TextField
-          label="Days Until Flight"
-          type="number"
-          name="days_until_flight"
-          value={formData.days_until_flight}
+          label="Flight Date (YYYY-MM-DD)"
+          type="date"
+          name="flightDate"
+          value={formData.flightDate}
           onChange={handleChange}
           fullWidth
           margin="normal"
@@ -57,12 +53,26 @@ function App() {
           onChange={handleChange}
           fullWidth
           margin="normal"
+          helperText="Flight destination from SFO"
         />
-        {/* Add other inputs for each model feature */}
-        <Button type="submit" variant="contained" color="primary">
+        <TextField
+          label="Airline Name"
+          type="text"
+          name="segmentsAirlineName"
+          value={formData.segmentsAirlineName}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+        />
+        <FormControlLabel
+          control={<Checkbox checked={formData.isBasicEconomy} onChange={handleChange} name="isBasicEconomy" />}
+          label="Is Basic Economy?"
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
           Predict Fare
         </Button>
-        {fare && <Typography variant="h6">Predicted Fare: ${fare}</Typography>}
+        {fare && <Typography variant="h6" sx={{ mt: 2 }}>Predicted Fare: ${fare}</Typography>}
       </form>
     </Container>
   );
