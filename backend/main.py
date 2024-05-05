@@ -27,16 +27,35 @@ pipeline = joblib.load('Data/flight_fare_predictor.pkl')
 
 @app.route('/predict', methods=['POST'])
 def predict():
+
+    data = request.get_json()
+    print(data)
+
+    flight_date = datetime.strptime(data['flightDate'], '%Y-%m-%d')
+    flight_day = flight_date.strftime('%A')
+    serach_date = datetime.today()
+    search_day = serach_date.strftime('%A')
+    days_until_flight = (flight_date - serach_date).days
+
+    is_search_weekend = 1 if serach_date.weekday() in [5, 6] else 0
+    is_flight_weekend = 1 if flight_date.weekday() in [5, 6] else 0
+
+    destination_airport = data['destinationAirport']
+    segment_airline_name = data['segmentsAirlineName']
+
+    is_basic_economy = 1 if data['isBasicEconomy'] else 0
+
+    print(flight_day)
     
     input_data = {
-    'days_until_flight': [10],
-    'is_search_weekend': [0],
-    'is_flight_weekend': [1],
-    'searchDayName': ['Wednesday'],
-    'flightDayName': ['Sunday'],
-    'isBasicEconomy': [0],
-    'segmentsAirlineName': ['United'],
-    'destinationAirport': ['JFK']
+    'days_until_flight': [days_until_flight],
+    'is_search_weekend': [is_search_weekend],
+    'is_flight_weekend': [is_flight_weekend],
+    'searchDayName': [search_day],
+    'flightDayName': [flight_day],
+    'isBasicEconomy': [is_basic_economy],
+    'segmentsAirlineName': [segment_airline_name],
+    'destinationAirport': [destination_airport]
     }
 
     # Convert input data to DataFrame ensuring correct format
