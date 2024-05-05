@@ -23,8 +23,10 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('formData:', formData);
       const response = await axios.post('http://127.0.0.1:5000/predict', formData);
-      setFare(response.data.fare);
+      console.log('response:', response.data);
+      setFare(response.data.prediction);
     } catch (error) {
       console.error('Error fetching fare:', error);
     }
