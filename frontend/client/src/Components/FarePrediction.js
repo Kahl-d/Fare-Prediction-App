@@ -49,14 +49,18 @@ function FarePrediction() {
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="Flight Date (YYYY-MM-DD)"
+          label="Flight Date"
           type="date"
           name="flightDate"
-          value={formData.flightDate}
+          value={formData.flightDate || ''}
           onChange={handleChange}
           fullWidth
           margin="normal"
-        />
+          placeholder=""
+          InputLabelProps={{
+            shrink: true, // This will make the label shrink when the input field is not empty
+          }}
+        />  
         <TextField
           select
           label="Destination Airport"

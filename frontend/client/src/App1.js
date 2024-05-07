@@ -4,6 +4,8 @@ import { Container, AppBar, Toolbar, Typography, Button } from '@mui/material';
 import FarePrediction from './Components/FarePrediction';
 import SeatPrediction from './Components/SeatPrediction';
 import PriceTrend from './Components/PriceTrend';
+import HomePage from './Components/Homepage';
+import './App.css'
 
 function App() {
   return (
@@ -16,7 +18,7 @@ function App() {
             <Button color="inherit" component={Link} to="/price-trend">Price Trend</Button>
         </div>
         <Routes>
-          <Route path="/" element={<Typography variant="h4" gutterBottom>Welcome to the Flight Fare Prediction System</Typography>} />
+          <Route path="/" element={<HomePage/>}/>
           <Route path="/fare-prediction" element={<FarePrediction />} />
           <Route path="/seat-prediction" element={<SeatPrediction />} />
           <Route path="/price-trend" element={<PriceTrend />} />

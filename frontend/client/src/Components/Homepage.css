@@ -1,0 +1,15 @@
+.homepage {
+    text-align: center;
+    padding: 20px;
+}
+
+.homepage h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.image-placeholder img {
+    max-width: 100%;
+    height: 75vh;
+    margin: auto;
+}
