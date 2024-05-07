@@ -82,7 +82,7 @@ def predict():
         search_date = datetime.today()
         search_day = search_date.strftime('%A')
         days_until_flight = (flight_date - search_date).days
-        # journey_start = data.get('journeyStart')
+        journey_start = data.get('journeyStartTime')
 
         input_data = {
             'flightDayName': [flight_day],
@@ -93,7 +93,7 @@ def predict():
             'is_flight_weekend': [1 if flight_date.weekday() in [5, 6] else 0],
             'days_until_flight': [days_until_flight],
             'isBasicEconomy': [1 if data.get('isBasicEconomy', False) else 0],
-            'journeyStartTime': [5]
+            'journeyStartTime': [journey_start],
         }
 
         # Create DataFrame for initial prediction

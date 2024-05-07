@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Checkbox, FormControlLabel, MenuItem } from '@mui/material';
+import { Container, TextField, Button, Typography, Checkbox, FormControlLabel, MenuItem, Slider } from '@mui/material';
 import axios from 'axios';
-import BoardingPass from './BoardingPass';  // Import the BoardingPass component
+import BoardingPass from './BoardingPass';
 
 function FarePrediction() {
   const [formData, setFormData] = useState({
     flightDate: '',
+    journeyStartTime: 0, // Initialize journey start time
     isBasicEconomy: false,
     segmentsAirlineName: '',
     destinationAirport: ''
@@ -23,9 +24,17 @@ function FarePrediction() {
     }));
   };
 
+  const handleSliderChange = (event, newValue) => {
+    setFormData(prevState => ({
+      ...prevState,
+      journeyStartTime: newValue
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('formData:', formData);
       const response = await axios.post('http://127.0.0.1:5000/predict', formData);
       setFare(response.data.prediction);
     } catch (error) {
@@ -82,6 +91,19 @@ function FarePrediction() {
           control={<Checkbox checked={formData.isBasicEconomy} onChange={handleChange} name="isBasicEconomy" />}
           label="Is Basic Economy?"
           margin="normal"
+        />
+        <Typography gutterBottom>
+          Journey Start Time (0-24h)
+        </Typography>
+        <Slider
+          value={formData.journeyStartTime}
+          onChange={handleSliderChange}
+          aria-labelledby="journey-start-time-slider"
+          valueLabelDisplay="auto"
+          step={0.1}
+          marks
+          min={0}
+          max={24}
         />
         <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
           Predict Fare
