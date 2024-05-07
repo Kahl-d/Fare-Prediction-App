@@ -49,12 +49,26 @@ app = Flask(__name__)
 CORS(app)
 
 # Load the complete pipeline
-pipeline = joblib.load('Data/flight_fare_predictor.pkl')
-base_fare_pipeline = joblib.load('Data/base_fare_pipeline.pkl')
-totalTravelDistance_pipeline = joblib.load('Data/travel_duration_pipeline.pkl')
-is_non_stop_pipeline = joblib.load('Data/is_non_stop_pipeline.pkl')
-multiple_carrier_pipeline = joblib.load('Data/multiple_carriers_pipeline.pkl')
-elapsed_days_pipeline = joblib.load('Data/elapsed_days_pipeline.pkl')
+# pipeline = joblib.load('Data/flight_fare_predictor.pkl')
+# base_fare_pipeline = joblib.load('Data/base_fare_pipeline.pkl')
+# totalTravelDistance_pipeline = joblib.load('Data/travel_duration_pipeline.pkl')
+# is_non_stop_pipeline = joblib.load('Data/is_non_stop_pipeline.pkl')
+# multiple_carrier_pipeline = joblib.load('Data/multiple_carriers_pipeline.pkl')
+# elapsed_days_pipeline = joblib.load('Data/elapsed_days_pipeline.pkl')
+
+# Load the complete pipeline
+fare_pipeline = joblib.load('Data/Models/fare_predicition_model.pkl')
+base_fare_pipeline = joblib.load('Data/Models/base_fare_pipeline.pkl')
+totalTravelDistance_pipeline = joblib.load('Data/Models/totalTravelDuration_pipeline.pkl')
+is_non_stop_pipeline = joblib.load('Data/Models/is_non_stop_pipeline.pkl')
+multiple_carrier_pipeline = joblib.load('Data/Models/multiple_carriers_pipeline.pkl')
+elapsed_days_pipeline = joblib.load('Data/Models/elapsed_days_pipeline.pkl')
+combination_code_pipeline = joblib.load('Data/Models/combination_code_pipeline.pkl')
+seatsRemaining_pipeline = joblib.load('Data/Models/seatsRemaining_pipeline.pkl')
+totalTravelDuration_pipeline = joblib.load('Data/Models/totalTravelDuration_pipeline.pkl')
+weighted_fare_change_pipeline = joblib.load('Data/Models/weighted_fare_change_pipeline.pkl')
+weighted_seats_change_pipeline = joblib.load('Data/Models/weighted_seats_change_pipeline.pkl')
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -68,6 +82,7 @@ def predict():
         search_date = datetime.today()
         search_day = search_date.strftime('%A')
         days_until_flight = (flight_date - search_date).days
+        # journey_start = data.get('journeyStart')
 
         input_data = {
             'flightDayName': [flight_day],
@@ -78,6 +93,7 @@ def predict():
             'is_flight_weekend': [1 if flight_date.weekday() in [5, 6] else 0],
             'days_until_flight': [days_until_flight],
             'isBasicEconomy': [1 if data.get('isBasicEconomy', False) else 0],
+            'journeyStartTime': [5]
         }
 
         # Create DataFrame for initial prediction
@@ -89,7 +105,13 @@ def predict():
             "totalTravelDistance": float(totalTravelDistance_pipeline.predict(input_df)[0]),
             "isNonStop": int(is_non_stop_pipeline.predict(input_df)[0]),
             "Multiple_Carriers": int(multiple_carrier_pipeline.predict(input_df)[0]),
-            "elapsedDays": float(elapsed_days_pipeline.predict(input_df)[0])
+            "elapsedDays": float(elapsed_days_pipeline.predict(input_df)[0]),
+            "combination_code": float(combination_code_pipeline.predict(input_df)[0]),
+            "seatsRemaining": float(seatsRemaining_pipeline.predict(input_df)[0]),
+            "totalTravelDuration": float(totalTravelDuration_pipeline.predict(input_df)[0]),
+            "weighted_fare_change": float(weighted_fare_change_pipeline.predict(input_df)[0]),
+            "weighted_seats_change": float(weighted_seats_change_pipeline.predict(input_df)[0]),
+
         }
 
         # Update input DataFrame with the estimated values for the main prediction
@@ -97,7 +119,7 @@ def predict():
             input_df[key] = [value]
 
         # Main prediction
-        prediction = float(pipeline.predict(input_df))
+        prediction = float(fare_pipeline.predict(input_df))
         print(f"Predicted flight fare: {prediction}")
         print(f"Estimated values: {estimated_values}")
 
